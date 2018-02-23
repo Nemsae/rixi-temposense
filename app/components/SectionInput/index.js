@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { placeholder } from 'utils/styled-mixins';
+
 const SectionLabel = styled.input`
   flex-grow: 1;
   max-width: 200px;
@@ -13,8 +15,14 @@ const SectionLabel = styled.input`
   border-radius: 3px;
 
   &::selection {
-   background: #7fdae7;
+   background: #000;
+   color: #fff;
   }
+
+  ${placeholder({
+    'font-size': '12px',
+    color: 'pink',
+  })}
 `;
 
 export default SectionLabel;

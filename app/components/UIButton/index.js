@@ -1,8 +1,15 @@
 import styled from 'styled-components';
 
 const UIButton = styled.a`
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
+
+  border: 1px solid #000;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
 
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -19,13 +26,14 @@ const UIButton = styled.a`
   font-size: 14px;
   font-weight: 600;
   text-align: center;
+  text-transform: capitalize;
+
   white-space: nowrap;
   -webkit-appearance: none;
 
   &:hover {
-    background: #fff;
-    color: #000;
-    border: 1px solid #000;
+    background: #000;
+    color: #fff;
     text-decoration: none;
   }
 `;

@@ -24,6 +24,10 @@ injectGlobal`
     min-width: 100%;
   }
 
+  input {
+    font-family: 'Montserrat', sans-serif;
+  }
+
   p,
   label {
     ${'' /* font-family: Georgia, Times, 'Times New Roman', serif; */}
