@@ -8,6 +8,10 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   header: {
     id: 'app.components.HomePage.header',
-    defaultMessage: 'This is HomePage component!',
+    defaultMessage: 'Rixi TempoSense',
+  },
+  dashboardHeader: {
+    id: 'app.components.HomePage.dashboard.header',
+    defaultMessage: 'Dashboard',
   },
 });
