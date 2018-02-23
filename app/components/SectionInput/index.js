@@ -19,10 +19,10 @@ const SectionLabel = styled.input`
    color: #fff;
   }
 
-  ${placeholder({
-    'font-size': '12px',
-    color: 'pink',
-  })}
+  ${placeholder(`
+    font-size: 12px;
+    color: pink;
+  `)}
 `;
 
 export default SectionLabel;
