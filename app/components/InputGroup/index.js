@@ -2,11 +2,14 @@ import styled from 'styled-components';
 
 const InputGroup = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: left;
   justify-content: center;
 
-  margin-bottom: 5px;
-  margin-top: 5px;
+  width: 175px;
+  max-width: 250px;
+
+  margin: 15px;
 `;
 
 export default InputGroup;

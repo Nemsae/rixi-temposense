@@ -18,12 +18,18 @@ import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import H1 from 'components/H1';
+import Icon from 'components/Icon';
+import IconButton from 'components/IconButton';
+import IconColumn from 'components/IconColumn';
+import InputGroup from 'components/InputGroup';
+import InputColumn from 'components/InputColumn';
+import SectionButton from 'components/SectionButton';
 import SectionCard from 'components/SectionCard';
 import SectionHeader from 'components/SectionHeader';
 import SectionInput from 'components/SectionInput';
 import SectionLabel from 'components/SectionLabel';
-import InputGroup from 'components/InputGroup';
-import SectionButton from 'components/SectionButton';
+import SectionRow from 'components/SectionRow';
+import SectionRowEnd from 'components/SectionRowEnd';
 
 import { makeSelectSensors, makeSelectLoading, makeSelectError } from 'containers/App/selectors';
 import { makeSelectInputs } from './selectors';
@@ -34,24 +40,32 @@ import reducer from './reducer';
 import saga from './saga';
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
-  state = {
-    inputs: {
-      time: '',
-      date: '',
-      latitude: '',
-      longitude: '',
-    },
+  state = {}
+
+  setLocation = () => {
+    if ('geolocation' in navigator) {
+      console.log('navigator.geolocation: ', navigator.geolocation);
+      navigator.geolocation.getCurrentPosition((position) => {
+        // do_something(position.coords.latitude, position.coords.longitude);
+        console.log('position.coords.latitude: ', position.coords.latitude);
+        console.log('position.coords.longitude: ', position.coords.longitude);
+      });
+      /* geolocation is available */
+    } else {
+      /* geolocation IS NOT available */
+      alert('Geolocation is not supported by this browser.');
+    }
   }
 
-  onChangeInput = (evt) => {
-    const id = evt.target.id.split('-')[1];
-    const value = evt.target.value;
-    this.setState((prevState) => ({ ...prevState,
-      inputs: { ...prevState.inputs,
-        [id]: value,
-      },
-    }));
-  }
+  // onChangeInput = (evt) => {
+  //   const id = evt.target.id.split('-')[1];
+  //   const value = evt.target.value;
+  //   this.setState((prevState) => ({ ...prevState,
+  //     inputs: { ...prevState.inputs,
+  //       [id]: value,
+  //     },
+  //   }));
+  // }
 
   // onSubmitSensor = (evt) => {
   //   evt.preventDefault();
@@ -65,24 +79,48 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
         <SectionCard>
           <SectionHeader><FormattedMessage {...messages.dashboardHeader} /></SectionHeader>
-          <InputGroup>
-            <SectionLabel htmlFor="sensor-time">Time</SectionLabel>
-            {/* <SectionInput id="sensor-time" type="text" placeholder="Enter a time" onChange={this.onChangeInput} value={inputs.time} /> */}
-            <SectionInput id="sensor-time" type="text" placeholder="Enter a time" onChange={this.props.onChangeInput} value={inputs.time} />
-          </InputGroup>
-          <InputGroup>
-            <SectionLabel htmlFor="sensor-date">Date</SectionLabel>
-            <SectionInput id="sensor-date" type="date" placeholder="Enter a date" onChange={this.props.onChangeInput} value={inputs.date} />
-          </InputGroup>
-          <InputGroup>
-            <SectionLabel htmlFor="sensor-latitude">Latitude</SectionLabel>
-            <SectionInput id="sensor-latitude" type="text" placeholder="Enter the latitude" onChange={this.props.onChangeInput} value={inputs.latitude} />
-          </InputGroup>
-          <InputGroup>
-            <SectionLabel htmlFor="sensor-longitude">Longitude</SectionLabel>
-            <SectionInput id="sensor-longitude" type="text" placeholder="Enter the longitude" onChange={this.props.onChangeInput} value={inputs.longitude} />
-          </InputGroup>
-          <SectionButton onClick={this.props.onSubmitSensor}>Add Sensor</SectionButton>
+          <SectionRow>
+            <IconColumn>
+              <Icon className="fas fa-clock fa-2x" />
+            </IconColumn>
+            <InputColumn>
+              <InputGroup>
+                <SectionLabel htmlFor="sensor-time">Time</SectionLabel>
+                {/* <SectionInput id="sensor-time" type="text" placeholder="Enter a time" onChange={this.onChangeInput} value={inputs.time} /> */}
+                <SectionInput id="sensor-time" type="text" placeholder="Enter a time" onChange={this.props.onChangeInput} value={inputs.time} />
+              </InputGroup>
+              <InputGroup>
+                <SectionLabel htmlFor="sensor-date">Date</SectionLabel>
+                <SectionInput id="sensor-date" type="date" placeholder="Enter a date" onChange={this.props.onChangeInput} value={inputs.date} />
+              </InputGroup>
+            </InputColumn>
+          </SectionRow>
+
+          <SectionRow>
+            <IconColumn onClick={this.setLocation}>
+              <Icon className="fas fa-map-marker-alt fa-2x" />
+            </IconColumn>
+            <InputColumn>
+              <InputGroup>
+                <SectionLabel htmlFor="sensor-latitude">Latitude</SectionLabel>
+                <SectionInput id="sensor-latitude" type="text" placeholder="Enter the latitude" onChange={this.props.onChangeInput} value={inputs.latitude} />
+              </InputGroup>
+              <InputGroup>
+                <SectionLabel htmlFor="sensor-longitude">Longitude</SectionLabel>
+                <SectionInput id="sensor-longitude" type="text" placeholder="Enter the longitude" onChange={this.props.onChangeInput} value={inputs.longitude} />
+              </InputGroup>
+            </InputColumn>
+          </SectionRow>
+
+          <SectionRowEnd>
+            <IconColumn>
+              <Icon className="fas fa-check fa-2x" />
+            </IconColumn>
+            <InputColumn>
+              <SectionButton onClick={this.props.onSubmitSensor}>Add Sensor</SectionButton>
+            </InputColumn>
+          </SectionRowEnd>
+
         </SectionCard>
 
         <SectionCard>

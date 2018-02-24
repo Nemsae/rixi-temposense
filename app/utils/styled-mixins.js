@@ -1,3 +1,9 @@
+/*
+ * Styled-Components Mixins
+ *
+ * Mixin to handle all crossbrowser styles
+ *
+ */
 
 export function placeholder(styles) {
   return `
@@ -16,21 +22,12 @@ export function placeholder(styles) {
   `;
 }
 
-// export function placeholder(styles) {
-//   const properties = Object.keys(styles);
-//   const css = properties.map((property) => (`${property}: ${styles[property]};\n`)).join('');
-//   return `
-//     ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-//       ${css}
-//     }
-//     ::-moz-placeholder { /* Firefox 19+ */
-//       ${css}
-//     }
-//     :-ms-input-placeholder { /* IE 10+ */
-//       ${css}
-//     }
-//     :-moz-placeholder { /* Firefox 18- */
-//       ${css}
-//     }
-//   `;
-// }
+export function borderRadius(style) {
+  return `
+    -webkit-border-radius: ${style};
+    -moz-border-radius: ${style};
+    -ms-border-radius: ${style};
+    -o-border-radius: ${style};
+    border-radius: ${style};
+  `;
+}

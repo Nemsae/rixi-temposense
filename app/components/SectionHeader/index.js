@@ -1,10 +1,19 @@
 import NormalH1 from 'components/H1';
 
 const SectionHeader = NormalH1.extend`
-  background: #000;
+  background: #323232;
   color: #fff;
 
-  margin: 15px -15px;
+  height: 70px;
+  line-height: 70px;
+  text-align: left;
+
+  padding-left: 35px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 `;
 
 export default SectionHeader;

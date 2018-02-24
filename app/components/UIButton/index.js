@@ -1,15 +1,13 @@
 import styled from 'styled-components';
 
+import { borderRadius } from 'utils/styled-mixins';
+
 const UIButton = styled.a`
   background: #fff;
   color: #000;
 
   border: 1px solid #000;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-  border-radius: 3px;
+  ${borderRadius('3px')};
 
   -webkit-box-shadow: none;
   -moz-box-shadow: none;

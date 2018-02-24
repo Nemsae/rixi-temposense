@@ -1,21 +1,35 @@
 import styled from 'styled-components';
 
-import { placeholder } from 'utils/styled-mixins';
+import { placeholder, borderRadius } from 'utils/styled-mixins';
 
 const SectionLabel = styled.input`
   flex-grow: 1;
-  max-width: 200px;
 
+  width: 100%;
+  max-width: 200px;
   padding: 3px 4px;
-  border: 1px solid #D7DBDF;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-  border-radius: 3px;
+
+  ${'' /* border: 1px solid #D7DBDF; */}
+  ${borderRadius('0px')}
+
+  font-size: 14px;
+
+  border: none;
+  border-bottom: 1px solid #D8D8D8;
+  background: none;
+  border-radius: 0px;
+  color: #ff8da1;
+  font-size: 14px;
+
+  &:focus {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+  }
 
   &::selection {
-   background: #000;
+   background: pink;
    color: #fff;
   }
 
