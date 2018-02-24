@@ -9,6 +9,7 @@ const SectionRow = styled.div`
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
   height: 75px;
+  line-height: 75px;
   margin-bottom: 10px;
 
   &:hover {

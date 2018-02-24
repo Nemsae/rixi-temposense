@@ -9,7 +9,6 @@ const SectionLabel = styled.input`
   max-width: 200px;
   padding: 3px 4px;
 
-  ${'' /* border: 1px solid #D7DBDF; */}
   ${borderRadius('0px')}
 
   font-size: 14px;

@@ -18,6 +18,7 @@ import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import H1 from 'components/H1';
+import H2 from 'components/H2';
 import Icon from 'components/Icon';
 import IconButton from 'components/IconButton';
 import IconColumn from 'components/IconColumn';
@@ -30,6 +31,7 @@ import SectionInput from 'components/SectionInput';
 import SectionLabel from 'components/SectionLabel';
 import SectionRow from 'components/SectionRow';
 import SectionRowEnd from 'components/SectionRowEnd';
+import Sensors from 'components/Sensors';
 
 import { makeSelectSensors, makeSelectLoading, makeSelectError } from 'containers/App/selectors';
 import { makeSelectInputs, makeSelectMessage } from './selectors';
@@ -42,53 +44,58 @@ import saga from './saga';
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   state = {
     loading: false,
+    //  message from store should be moved here
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.message !== 'Location loading...') {
+    if (nextProps.message.defaultMessage !== messages.loadingMessage.defaultMessage) {
       /* As long as we are not loading the location... proceed */
       if (nextProps.inputs.latitude.length && nextProps.inputs.longitude.length) {
         /* Validation Success - Change message to submit */
-        this.props.onChangeMessage('Submit');
+        this.props.onChangeMessage(messages.successMessage);
       } else {
         /* Validation Error - Change message to error */
-        this.props.onChangeMessage('Latitude & Longitude required!');
+        this.props.onChangeMessage(messages.errorMessage);
       }
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (!nextProps.inputs.latitude.length || !nextProps.inputs.longitude.length) {
-  //     console.log('Sanity:0');
-  //     if (!this.state.loading && !nextState.loading) {
-  //       console.log('Sanity:1');
-  //       this.props.onChangeMessage('Latitude & Longitude required!');
-  //     } else {
-  //       console.log('Sanity:2');
-  //       // this.props.onChangeMessage('Latitude & Longitude required!');
-  //     }
-  //   } else {
-  //     console.log('Sanity:3');
-  //     this.props.onChangeMessage('Submit');
-  //   }
-  //   return true;
-  // }
+  setTime = () => {
+    const date = new Date();
+    const yyyy = date.getFullYear().toString();
+    const mm = (date.getMonth() + 1).toString();
+    const dd = date.getDate().toString();
+    const mmChars = mm.split('');
+    const ddChars = dd.split('');
+    const formattedDate = `${yyyy}-${(mmChars[1] ? mm : `0${mmChars[0]}`)}-${(ddChars[1] ? dd : `0${ddChars[0]}`)}`;
+    this.props.onChangeInput(null, 'date', formattedDate);
+
+    const minutes = date.getMinutes().toString();
+    console.log('minutes: ', minutes);
+    console.log('typeof minutes: ', typeof minutes);
+    const hours = date.getHours();
+    const time = `${hours}:${(minutes.length > 1 ? minutes : `0${minutes}`)}`;
+    this.props.onChangeInput(null, 'time', time);
+
+    const ms = date.getTime();
+    console.log('ms: ', ms);
+  }
 
   setLocation = () => {
     if ('geolocation' in navigator) {
       /* geolocation is available */
       this.triggerLoadState();
-      this.props.onChangeMessage('Location loading...');
+      this.props.onChangeMessage(messages.loadingMessage);
 
       navigator.geolocation.getCurrentPosition((position) => {
         this.props.onChangeInput(null, 'latitude', position.coords.latitude.toString());
         this.props.onChangeInput(null, 'longitude', position.coords.longitude.toString());
-        this.props.onChangeMessage('Submit');
+        this.props.onChangeMessage(messages.successMessage);
         this.triggerLoadState();
       });
     } else {
       /* geolocation IS NOT available */
-      this.props.onChangeMessage('Geolocation not supported by this browser.');
+      this.props.onChangeMessage(messages.geoErrorMessage);
     }
   }
 
@@ -110,65 +117,61 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   render() {
     const { inputs } = this.props;
     return (
-      <article>
+      <div>
+        <article>
 
-        <SectionCard>
-          <SectionHeader><FormattedMessage {...messages.dashboardHeader} /></SectionHeader>
-          <SectionRow>
-            <IconColumn>
-              <Icon className="fas fa-clock fa-2x" />
-            </IconColumn>
-            <InputColumn>
-              <InputGroup>
-                <SectionLabel htmlFor="sensor-time">Time</SectionLabel>
-                {/* <SectionInput id="sensor-time" type="text" placeholder="Enter a time" onChange={this.onChangeInput} value={inputs.time} /> */}
-                <SectionInput id="sensor-time" type="text" placeholder="Enter a time" onChange={this.props.onChangeInput} value={inputs.time} />
-              </InputGroup>
-              <InputGroup>
-                <SectionLabel htmlFor="sensor-date">Date</SectionLabel>
-                <SectionInput id="sensor-date" type="date" placeholder="Enter a date" onChange={this.props.onChangeInput} value={inputs.date} />
-              </InputGroup>
-            </InputColumn>
-          </SectionRow>
+          <SectionCard>
+            <SectionHeader><FormattedMessage {...messages.dashboardHeader} /></SectionHeader>
+            <SectionRow>
+              <IconColumn onClick={this.setTime}>
+                <Icon className="fas fa-clock fa-2x" />
+              </IconColumn>
+              <InputColumn>
+                <InputGroup>
+                  <SectionLabel htmlFor="sensor-time">Time</SectionLabel>
+                  <SectionInput id="sensor-time" type="text" placeholder="Enter a time (HH:MM)" onChange={this.props.onChangeInput} value={inputs.time} />
+                </InputGroup>
+                <InputGroup>
+                  <SectionLabel htmlFor="sensor-date">Date</SectionLabel>
+                  <SectionInput id="sensor-date" type="date" placeholder="Enter a date" onChange={this.props.onChangeInput} value={inputs.date} />
+                </InputGroup>
+              </InputColumn>
+            </SectionRow>
 
-          <SectionRow>
-            <IconColumn onClick={this.setLocation}>
-              <Icon className="fas fa-map-marker-alt fa-2x" />
-            </IconColumn>
-            <InputColumn>
-              <InputGroup>
-                <SectionLabel htmlFor="sensor-latitude">Latitude</SectionLabel>
-                <SectionInput id="sensor-latitude" type="text" placeholder="Enter the latitude" onChange={this.props.onChangeInput} value={inputs.latitude} />
-              </InputGroup>
-              <InputGroup>
-                <SectionLabel htmlFor="sensor-longitude">Longitude</SectionLabel>
-                <SectionInput id="sensor-longitude" type="text" placeholder="Enter the longitude" onChange={this.props.onChangeInput} value={inputs.longitude} />
-              </InputGroup>
-            </InputColumn>
-          </SectionRow>
+            <SectionRow>
+              <IconColumn onClick={this.setLocation}>
+                <Icon className="fas fa-map-marker-alt fa-2x" />
+              </IconColumn>
+              <InputColumn>
+                <InputGroup>
+                  <SectionLabel htmlFor="sensor-latitude">Latitude</SectionLabel>
+                  <SectionInput id="sensor-latitude" type="text" placeholder="Enter the latitude" onChange={this.props.onChangeInput} value={inputs.latitude} />
+                </InputGroup>
+                <InputGroup>
+                  <SectionLabel htmlFor="sensor-longitude">Longitude</SectionLabel>
+                  <SectionInput id="sensor-longitude" type="text" placeholder="Enter the longitude" onChange={this.props.onChangeInput} value={inputs.longitude} />
+                </InputGroup>
+              </InputColumn>
+            </SectionRow>
 
-          <SectionRowEnd>
-            <IconColumn>
-              {
-                this.state.loading ?
-                  <Icon className="fas fa-spinner fa-spin fa-2x" />
-                  :
-                  this.renderSubmitIcon()
-              }
-            </IconColumn>
-            <InputColumn>
-              <h3>{ this.props.message }</h3>
-              {/* <SectionButton onClick={this.props.onSubmitSensor}>Add Sensor</SectionButton> */}
-            </InputColumn>
-          </SectionRowEnd>
+            <SectionRowEnd latitude={inputs.latitude} longitude={inputs.longitude} loading={this.state.loading} submitFxn={this.props.onSubmit}>
+              <IconColumn>
+                {
+                  this.state.loading ?
+                    <Icon className="fas fa-spinner fa-spin fa-2x" />
+                    :
+                    this.renderSubmitIcon()
+                }
+              </IconColumn>
+              <InputColumn>
+                <H2><FormattedMessage {...(this.props.message.id ? this.props.message : this.props.message.toObject())} /></H2>
+              </InputColumn>
+            </SectionRowEnd>
+          </SectionCard>
+        </article>
 
-        </SectionCard>
-
-        <SectionCard>
-          <H1><FormattedMessage {...messages.header} /></H1>
-        </SectionCard>
-
-      </article>
+        <Sensors />
+      </div>
     );
   }
 }
@@ -184,8 +187,8 @@ HomePage.propTypes = {
     PropTypes.bool,
   ]),
   inputs: PropTypes.any,
-  message: PropTypes.string,
-  onSubmitSensor: PropTypes.func,
+  message: PropTypes.any,
+  onSubmit: PropTypes.func,
   onChangeInput: PropTypes.func,
   onChangeMessage: PropTypes.func,
 };
@@ -200,8 +203,9 @@ export function mapDispatchToProps(dispatch) {
         dispatch(changeInput(id, value));
       }
     },
-    onChangeMessage: (message) => dispatch(changeMessage(message)),
-    onSubmitSensor: (evt) => {
+    onChangeMessage: (messageObj) => dispatch(changeMessage(messageObj)),
+    onSubmit: (evt) => {
+      console.log('Sanity:onSubmit');
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(loadSensors());
     },
@@ -217,7 +221,6 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
 const withReducer = injectReducer({ key: 'home', reducer });
 const withSaga = injectSaga({ key: 'home', saga });
 

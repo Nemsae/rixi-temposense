@@ -1,5 +1,7 @@
 import { fromJS } from 'immutable';
 
+import messages from './messages';
+
 import {
   CHANGE_INPUT,
   CHANGE_MESSAGE,
@@ -14,7 +16,7 @@ const initialState = fromJS({
     longitude: '',
   },
   loading: false,
-  message: 'Latitude and Longitude required!',
+  message: messages.errorMessage,
 });
 
 function homeReducer(state = initialState, action) {
@@ -22,6 +24,9 @@ function homeReducer(state = initialState, action) {
     case CHANGE_INPUT:
       return state
         .setIn(['inputs', action.id], action.value);
+    // case CHANGE_INPUT:
+    //   return state
+    //     .setIn(['inputs', action.id], action.value);
     case CHANGE_MESSAGE:
       return state
         .set('message', action.message);
