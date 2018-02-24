@@ -32,45 +32,80 @@ import SectionRow from 'components/SectionRow';
 import SectionRowEnd from 'components/SectionRowEnd';
 
 import { makeSelectSensors, makeSelectLoading, makeSelectError } from 'containers/App/selectors';
-import { makeSelectInputs } from './selectors';
+import { makeSelectInputs, makeSelectMessage } from './selectors';
 import { loadSensors } from '../App/actions';
-import { changeInput } from './actions';
+import { changeInput, changeMessage } from './actions';
 import messages from './messages';
 import reducer from './reducer';
 import saga from './saga';
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
-  state = {}
+  state = {
+    loading: false,
+  }
 
-  setLocation = () => {
-    if ('geolocation' in navigator) {
-      console.log('navigator.geolocation: ', navigator.geolocation);
-      navigator.geolocation.getCurrentPosition((position) => {
-        // do_something(position.coords.latitude, position.coords.longitude);
-        console.log('position.coords.latitude: ', position.coords.latitude);
-        console.log('position.coords.longitude: ', position.coords.longitude);
-      });
-      /* geolocation is available */
-    } else {
-      /* geolocation IS NOT available */
-      alert('Geolocation is not supported by this browser.');
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.message !== 'Location loading...') {
+      /* As long as we are not loading the location... proceed */
+      if (nextProps.inputs.latitude.length && nextProps.inputs.longitude.length) {
+        /* Validation Success - Change message to submit */
+        this.props.onChangeMessage('Submit');
+      } else {
+        /* Validation Error - Change message to error */
+        this.props.onChangeMessage('Latitude & Longitude required!');
+      }
     }
   }
 
-  // onChangeInput = (evt) => {
-  //   const id = evt.target.id.split('-')[1];
-  //   const value = evt.target.value;
-  //   this.setState((prevState) => ({ ...prevState,
-  //     inputs: { ...prevState.inputs,
-  //       [id]: value,
-  //     },
-  //   }));
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (!nextProps.inputs.latitude.length || !nextProps.inputs.longitude.length) {
+  //     console.log('Sanity:0');
+  //     if (!this.state.loading && !nextState.loading) {
+  //       console.log('Sanity:1');
+  //       this.props.onChangeMessage('Latitude & Longitude required!');
+  //     } else {
+  //       console.log('Sanity:2');
+  //       // this.props.onChangeMessage('Latitude & Longitude required!');
+  //     }
+  //   } else {
+  //     console.log('Sanity:3');
+  //     this.props.onChangeMessage('Submit');
+  //   }
+  //   return true;
   // }
 
-  // onSubmitSensor = (evt) => {
-  //   evt.preventDefault();
-  //   console.log('this.state.inputs: ', this.state.inputs);
-  // }
+  setLocation = () => {
+    if ('geolocation' in navigator) {
+      /* geolocation is available */
+      this.triggerLoadState();
+      this.props.onChangeMessage('Location loading...');
+
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.props.onChangeInput(null, 'latitude', position.coords.latitude.toString());
+        this.props.onChangeInput(null, 'longitude', position.coords.longitude.toString());
+        this.props.onChangeMessage('Submit');
+        this.triggerLoadState();
+      });
+    } else {
+      /* geolocation IS NOT available */
+      this.props.onChangeMessage('Geolocation not supported by this browser.');
+    }
+  }
+
+  triggerLoadState = () => {
+    this.setState((prevState) => ({
+      ...prevState,
+      loading: !prevState.loading,
+    }));
+  }
+
+  renderSubmitIcon = () => {
+    if (this.props.inputs.latitude.length && this.props.inputs.longitude.length) {
+      /* Validation - required location inputs filled */
+      return <Icon className="fas fa-check fa-2x" />;
+    }
+    return <Icon className="fas fa-exclamation-circle fa-2x" />;
+  }
 
   render() {
     const { inputs } = this.props;
@@ -114,10 +149,16 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
           <SectionRowEnd>
             <IconColumn>
-              <Icon className="fas fa-check fa-2x" />
+              {
+                this.state.loading ?
+                  <Icon className="fas fa-spinner fa-spin fa-2x" />
+                  :
+                  this.renderSubmitIcon()
+              }
             </IconColumn>
             <InputColumn>
-              <SectionButton onClick={this.props.onSubmitSensor}>Add Sensor</SectionButton>
+              <h3>{ this.props.message }</h3>
+              {/* <SectionButton onClick={this.props.onSubmitSensor}>Add Sensor</SectionButton> */}
             </InputColumn>
           </SectionRowEnd>
 
@@ -143,13 +184,23 @@ HomePage.propTypes = {
     PropTypes.bool,
   ]),
   inputs: PropTypes.any,
+  message: PropTypes.string,
   onSubmitSensor: PropTypes.func,
   onChangeInput: PropTypes.func,
+  onChangeMessage: PropTypes.func,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onChangeInput: (evt) => dispatch(changeInput(evt.target.id.split('-')[1], evt.target.value)),
+    // onChangeInput: (evt) => dispatch(changeInput(evt.target.id.split('-')[1], evt.target.value)),
+    onChangeInput: (evt, id, value) => {
+      if (evt !== null) {
+        dispatch(changeInput(evt.target.id.split('-')[1], evt.target.value));
+      } else {
+        dispatch(changeInput(id, value));
+      }
+    },
+    onChangeMessage: (message) => dispatch(changeMessage(message)),
     onSubmitSensor: (evt) => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(loadSensors());
@@ -162,6 +213,7 @@ const mapStateToProps = createStructuredSelector({
   loading: makeSelectLoading(),
   error: makeSelectError(),
   inputs: makeSelectInputs(),
+  message: makeSelectMessage(),
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

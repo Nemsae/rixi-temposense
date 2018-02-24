@@ -12,6 +12,7 @@ const SectionHeader = NormalH1.extend`
   margin-bottom: 0px;
   margin-top: 0px;
 
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 `;
