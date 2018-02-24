@@ -16,6 +16,7 @@ import { createStructuredSelector } from 'reselect';
 
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
+import { createNewDate } from 'utils/date';
 
 import H1 from 'components/H1';
 import H2 from 'components/H2';
@@ -31,12 +32,14 @@ import SectionInput from 'components/SectionInput';
 import SectionLabel from 'components/SectionLabel';
 import SectionRow from 'components/SectionRow';
 import SectionRowEnd from 'components/SectionRowEnd';
+import SectionWrapper from 'components/SectionWrapper';
 import Sensors from 'components/Sensors';
 
 import { makeSelectSensors, makeSelectLoading, makeSelectError } from 'containers/App/selectors';
 import { makeSelectInputs, makeSelectMessage } from './selectors';
 import { loadSensors } from '../App/actions';
 import { changeInput, changeMessage } from './actions';
+import Wrapper from './Wrapper';
 import messages from './messages';
 import reducer from './reducer';
 import saga from './saga';
@@ -61,23 +64,9 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   }
 
   setTime = () => {
-    const date = new Date();
-    const yyyy = date.getFullYear().toString();
-    const mm = (date.getMonth() + 1).toString();
-    const dd = date.getDate().toString();
-    const mmChars = mm.split('');
-    const ddChars = dd.split('');
-    const formattedDate = `${yyyy}-${(mmChars[1] ? mm : `0${mmChars[0]}`)}-${(ddChars[1] ? dd : `0${ddChars[0]}`)}`;
+    const { formattedDate, formattedTime, ms } = createNewDate();
+    this.props.onChangeInput(null, 'time', formattedTime);
     this.props.onChangeInput(null, 'date', formattedDate);
-
-    const minutes = date.getMinutes().toString();
-    console.log('minutes: ', minutes);
-    console.log('typeof minutes: ', typeof minutes);
-    const hours = date.getHours();
-    const time = `${hours}:${(minutes.length > 1 ? minutes : `0${minutes}`)}`;
-    this.props.onChangeInput(null, 'time', time);
-
-    const ms = date.getTime();
     console.log('ms: ', ms);
   }
 
@@ -117,9 +106,9 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   render() {
     const { inputs } = this.props;
     return (
-      <div>
-        <article>
+      <Wrapper>
 
+        <SectionWrapper>
           <SectionCard>
             <SectionHeader><FormattedMessage {...messages.dashboardHeader} /></SectionHeader>
             <SectionRow>
@@ -168,10 +157,10 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
               </InputColumn>
             </SectionRowEnd>
           </SectionCard>
-        </article>
+        </SectionWrapper>
 
         <Sensors />
-      </div>
+      </Wrapper>
     );
   }
 }
@@ -195,7 +184,6 @@ HomePage.propTypes = {
 
 export function mapDispatchToProps(dispatch) {
   return {
-    // onChangeInput: (evt) => dispatch(changeInput(evt.target.id.split('-')[1], evt.target.value)),
     onChangeInput: (evt, id, value) => {
       if (evt !== null) {
         dispatch(changeInput(evt.target.id.split('-')[1], evt.target.value));
@@ -205,7 +193,6 @@ export function mapDispatchToProps(dispatch) {
     },
     onChangeMessage: (messageObj) => dispatch(changeMessage(messageObj)),
     onSubmit: (evt) => {
-      console.log('Sanity:onSubmit');
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(loadSensors());
     },

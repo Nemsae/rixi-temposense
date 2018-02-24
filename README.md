@@ -1,4 +1,6 @@
 ## TODO
+-1. Create new action for HomePage specifically for adding NEW sensor, instead of using LOAD_SENSORS
+0. Move message out of reducer to state
 1. Add google maps API
 2. Translator for all text
 
