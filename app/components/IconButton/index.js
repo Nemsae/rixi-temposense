@@ -6,7 +6,7 @@ const IconButton = NormalUIButton.extend`
   display: flex;
   align-items: center;
 
-  background: #000;
+  background: #167284;
   color: #fff;
 
   height: auto;
@@ -18,7 +18,7 @@ const IconButton = NormalUIButton.extend`
 
   &:hover {
     background: #fff;
-    color: #000;
+    color: #167284;
     text-decoration: none;
   }
 

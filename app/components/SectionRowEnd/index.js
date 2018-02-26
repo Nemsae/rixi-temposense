@@ -11,17 +11,17 @@ const SectionRowEnd = (props) => {
   }
 
   const SectionRowEndPrimitive = NormalSectionRow.extend`
-    background: #323232;
+    background: #167284;
     color: #fff;
 
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 
-    transition: background 1s, border-right-color 1s, color 1s;
+    transition: background .5s, border-right-color .5s, color .5s;
 
     .icon-column {
       border-right-color: #fff;
-      color: #ff8da1;
+      color: #fff;
       cursor: default;
       ${enableSubmit && `
         cursor: pointer;
@@ -34,22 +34,22 @@ const SectionRowEnd = (props) => {
       color: #000;
 
       .icon-column {
-        border-right-color: #ff8da1;
-        background: #ff8da1;
+        border-right-color: #6BD9E7;
+        background: #6BD9E7;
         color: #fff;
       }
     }
 
     ${enableSubmit && `
       cursor: pointer;
-      // color: #ff8da1;
+      // color: #6BD9E7;
 
       &:hover {
-        background: #ff8da1;
+        background: #6BD9E7;
         color: #fff;
 
         .icon-column {
-          background: #ff8da1;
+          background: #6BD9E7;
           border-right-color: #fff !important;
           color: #fff;
         }
@@ -62,7 +62,7 @@ const SectionRowEnd = (props) => {
       <SectionRowEndPrimitive onClick={props.submitFxn}>{ props.children }</SectionRowEndPrimitive>
       :
       <SectionRowEndPrimitive>{ props.children }</SectionRowEndPrimitive>
-  )
+  );
 };
 
 SectionRowEnd.propTypes = {

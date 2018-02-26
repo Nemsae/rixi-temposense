@@ -7,7 +7,7 @@ const IconColumn = NormalUIButton.extend.attrs({ className: 'icon-column' })`
   align-items: center;
 
   background: transparent;
-  color: pink;
+  color: #6BD9E7;
 
   height: auto;
   line-height: normal;
@@ -18,12 +18,12 @@ const IconColumn = NormalUIButton.extend.attrs({ className: 'icon-column' })`
   ${borderRadius('0px')}
   border-right: 2px solid #999999;
 
-  transition: background 1s, color 1s, border-right-color 1s; 
+  transition: background .5s, color .5s, border-right-color .5s;
 
   &:hover {
-    background: #ff8da1;
+    background: #6BD9E7;
     color: #fff !important;
-    border-right-color: #ff8da1 !important;
+    border-right-color: #6BD9E7 !important;
     text-decoration: none;
   }
 

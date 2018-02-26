@@ -10,10 +10,6 @@ export default defineMessages({
     id: 'app.components.HomePage.header',
     defaultMessage: 'Rixi TempoSense',
   },
-  sensorsHeader: {
-    id: 'app.components.HomePage.sensors.header',
-    defaultMessage: 'Sensors',
-  },
   dashboardHeader: {
     id: 'app.components.HomePage.dashboard.header',
     defaultMessage: 'Dashboard',

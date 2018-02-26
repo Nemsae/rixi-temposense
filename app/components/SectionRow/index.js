@@ -17,7 +17,7 @@ const SectionRow = styled.div`
 
     .icon-column {
       border-right-color: #7f7f7f;
-      color: #ff8da1;
+      color: #6BD9E7;
     }
   }
 `;

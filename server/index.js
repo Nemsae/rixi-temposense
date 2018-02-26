@@ -11,6 +11,14 @@ const isDev = process.env.NODE_ENV !== 'production';
 const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngrok') : false;
 const resolve = require('path').resolve;
 const app = express();
+const mongoose = require('mongoose');
+
+const MONGODB_URI = 'mongodb://rixi:GrerholtirlAwd6@ds159507.mlab.com:59507/jaysonder';
+
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI, (err) => {
+  console.log(err || `MongoDB connected to ${MONGODB_URI}`);
+}); //
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

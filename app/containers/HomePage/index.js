@@ -13,10 +13,11 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import ReactTooltip from 'react-tooltip';
 
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
-import { createNewDate } from 'utils/date';
+import { convertDate } from 'utils/date';
 
 import H1 from 'components/H1';
 import H2 from 'components/H2';
@@ -36,9 +37,10 @@ import SectionWrapper from 'components/SectionWrapper';
 import Sensors from 'components/Sensors';
 
 import { makeSelectSensors, makeSelectLoading, makeSelectError } from 'containers/App/selectors';
+import { loadSensors, ageSimulation } from 'containers/App/actions';
+
 import { makeSelectInputs, makeSelectMessage } from './selectors';
-import { loadSensors } from '../App/actions';
-import { changeInput, changeMessage } from './actions';
+import { changeInput, changeMessage, createSensor, deleteSensor } from './actions';
 import Wrapper from './Wrapper';
 import messages from './messages';
 import reducer from './reducer';
@@ -48,6 +50,18 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   state = {
     loading: false,
     //  message from store should be moved here
+  }
+
+  componentWillMount() {
+    this.props.loadAllSensors();
+  }
+
+  componentDidMount() {
+    // Every 5 seconds
+    // dispatch an action to notify all sensors to add 1 hour ahead [data set]
+    setInterval(() => {
+      this.props.ageSimulation();
+    }, 5000);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -64,10 +78,10 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   }
 
   setTime = () => {
-    const { formattedDate, formattedTime, ms } = createNewDate();
+    const { formattedDate, formattedTime, ms } = convertDate(true);
     this.props.onChangeInput(null, 'time', formattedTime);
     this.props.onChangeInput(null, 'date', formattedDate);
-    console.log('ms: ', ms);
+    // this.props.onChangeInput(null, 'ms', ms);
   }
 
   setLocation = () => {
@@ -112,7 +126,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
           <SectionCard>
             <SectionHeader><FormattedMessage {...messages.dashboardHeader} /></SectionHeader>
             <SectionRow>
-              <IconColumn onClick={this.setTime}>
+              <IconColumn data-tip="Click to grab current time." onClick={this.setTime}>
                 <Icon className="fas fa-clock fa-2x" />
               </IconColumn>
               <InputColumn>
@@ -128,7 +142,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
             </SectionRow>
 
             <SectionRow>
-              <IconColumn onClick={this.setLocation}>
+              <IconColumn data-tip="Click to grab location." onClick={this.setLocation}>
                 <Icon className="fas fa-map-marker-alt fa-2x" />
               </IconColumn>
               <InputColumn>
@@ -159,31 +173,41 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
           </SectionCard>
         </SectionWrapper>
 
-        <Sensors />
+        <Sensors sensors={this.props.sensors} delete={this.props.deleteSensor} />
+
+        <ReactTooltip />
       </Wrapper>
     );
   }
 }
 
 HomePage.propTypes = {
-  loading: PropTypes.bool,
-  error: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.bool,
-  ]),
+  // loading: PropTypes.bool,
+  // error: PropTypes.oneOfType([
+  //   PropTypes.object,
+  //   PropTypes.bool,
+  // ]),
   sensors: PropTypes.oneOfType([
-    PropTypes.array,
     PropTypes.bool,
+    PropTypes.array,
   ]),
   inputs: PropTypes.any,
   message: PropTypes.any,
-  onSubmit: PropTypes.func,
+
+  loadAllSensors: PropTypes.func,
   onChangeInput: PropTypes.func,
   onChangeMessage: PropTypes.func,
+  onSubmit: PropTypes.func,
+
+  ageSimulation: PropTypes.func,
+  deleteSensor: PropTypes.func,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
+    loadAllSensors: () => dispatch(loadSensors()),
+    ageSimulation: () => dispatch(ageSimulation()),
+    deleteSensor: (id) => dispatch(deleteSensor(id)),
     onChangeInput: (evt, id, value) => {
       if (evt !== null) {
         dispatch(changeInput(evt.target.id.split('-')[1], evt.target.value));
@@ -194,15 +218,15 @@ export function mapDispatchToProps(dispatch) {
     onChangeMessage: (messageObj) => dispatch(changeMessage(messageObj)),
     onSubmit: (evt) => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
-      dispatch(loadSensors());
+      dispatch(createSensor());
     },
   };
 }
 
 const mapStateToProps = createStructuredSelector({
   sensors: makeSelectSensors(),
-  loading: makeSelectLoading(),
-  error: makeSelectError(),
+  // loading: makeSelectLoading(),   //  from APP state
+  // error: makeSelectError(),   //  from APP state
   inputs: makeSelectInputs(),
   message: makeSelectMessage(),
 });

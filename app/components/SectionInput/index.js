@@ -17,10 +17,11 @@ const SectionLabel = styled.input`
   border-bottom: 1px solid #D8D8D8;
   background: none;
   border-radius: 0px;
-  color: #ff8da1;
+  color: #6BD9E7;
   font-size: 14px;
 
   &:focus {
+    ${'' /* border-color: #FAD2D1;; */}
     border-color: #66afe9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
@@ -28,13 +29,13 @@ const SectionLabel = styled.input`
   }
 
   &::selection {
-   background: pink;
+   background: #6BD9E7;
    color: #fff;
   }
 
   ${placeholder(`
     font-size: 12px;
-    color: pink;
+    color: #6BD9E7;
   `)}
 `;
 

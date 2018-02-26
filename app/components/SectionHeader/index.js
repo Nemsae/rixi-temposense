@@ -1,7 +1,8 @@
 import NormalH1 from 'components/H1';
 
 const SectionHeader = NormalH1.extend`
-  background: #323232;
+  ${'' /* background: #323232; */}
+  background: #167284;
   color: #fff;
 
   height: 70px;

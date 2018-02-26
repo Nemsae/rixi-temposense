@@ -4,9 +4,9 @@ import { borderRadius } from 'utils/styled-mixins';
 
 const UIButton = styled.a`
   background: #fff;
-  color: #000;
+  color: #167284;
 
-  border: 1px solid #000;
+  border: 1px solid #167284;
   ${borderRadius('3px')};
 
   -webkit-box-shadow: none;
@@ -30,7 +30,7 @@ const UIButton = styled.a`
   -webkit-appearance: none;
 
   &:hover {
-    background: #000;
+    background: #167284;
     color: #fff;
     text-decoration: none;
   }
