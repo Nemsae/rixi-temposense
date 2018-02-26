@@ -1,6 +1,6 @@
-Temperature Sensors
+## Leverege Coding Challenge - Temperature Sensors
 
-Deployed on Heroku @ https://rixi-temposense.herokuapp.com/.
+## Deployed on Heroku @ https://rixi-temposense.herokuapp.com/.
 
 ## TODO
 1. env vars for dark sky key, and mongodb user
