@@ -1,3 +1,7 @@
+Temperature Sensors
+
+Deployed on Heroku @ https://rixi-temposense.herokuapp.com/.
+
 ## TODO
 1. env vars for dark sky key, and mongodb user
 1. Move message out of reducer to state
